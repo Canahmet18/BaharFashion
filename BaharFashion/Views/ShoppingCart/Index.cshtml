@@ -1,0 +1,90 @@
+﻿@model BaharFashion.ViewModels.ShoppingCartViewModel
+@{
+    ViewBag.Name = "Shopping Cart";
+}
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.6.4/jquery.min.js"></script>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.6.0/css/all.min.css" />
+
+<script type="text/javascript">
+    $(function () {
+        // Document.ready -> link up remove event handler
+        $(".RemoveLink").click(function () {
+            // Get the id from the link
+            var recordToDelete = $(this).attr("data-id");
+            if (recordToDelete != '') {
+                // Perform the ajax post
+                $.post("/ShoppingCart/RemoveFromCart", { "id": recordToDelete },
+                    function (data) {
+                        // Successful requests get here
+                        // Update the page elements
+                        if (data.ItemCount == 0) {
+                            $('#row-' + data.DeleteId).fadeOut('slow');
+                        } else {
+                            $('#item-count-' + data.DeleteId).text(data.ItemCount);
+                        }
+                        $('#cart-total').text(data.CartTotal);
+                        $('#update-message').text(data.Message);
+                        $('#cart-status').text('Cart (' + data.CartCount + ')');
+                        location.reload();
+                    });
+
+            }
+        });
+    });
+</script>
+<h3>
+    <em>Review</em> your cart:
+</h3>
+<p class="button">
+    @Html.ActionLink("Checkout    >>", "AddressAndPayment", "Checkout",null,new {@style="color:#FF5733;"} )
+</p>
+<div id="update-message">
+</div>
+<table class="table">
+    <tr class="table-warning">
+        <th>
+            Giyim Name
+        </th>
+        <th>
+            Price (each)
+        </th>
+        <th>
+            Quantity
+        </th>
+        <th></th>
+    </tr>
+    @foreach (var item in Model.CartItems)
+    {
+        <tr id="row-@item.RecordId" class="table-warning">
+            <td>
+                @Html.ActionLink(item.Giyim.Name, "Details", "Store", new { id = item.GiyimId },new {@style="color:#FF5733;"} )
+            </td>
+            <td>
+                @item.Giyim.Price
+            </td>
+            <td id="item-count-@item.RecordId">
+                @item.Count
+            </td>
+            <td>
+                <a href="#" class="RemoveLink" style="color:#FF5733" data-id="@item.RecordId">Remove from cart</a>
+            </td>
+        </tr>
+    }
+    <tr class="table-warning">
+        <td>
+            Total
+        </td>
+        <td>
+        </td>
+        <td>
+        </td>
+        <td id="cart-total">
+            @(Math.Round(Model.CartTotal, 2))
+        </td>
+    </tr>
+</table>
+
+
+<a asp-action="Index" asp-controller="Home">
+    <i class="fa-solid fa-igloo fa-beat">Listeye Dön</i>
+</a>

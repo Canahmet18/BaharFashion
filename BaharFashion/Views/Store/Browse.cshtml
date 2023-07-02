@@ -1,0 +1,15 @@
+﻿@model IEnumerable<BaharFashion.Models.Giyim>
+
+@{
+    ViewData["Title"] = "Browse";
+}
+
+<h1>Browse</h1>
+
+@*<p>Giyimler:</p>*@
+<ul>
+    @foreach (var giyim in Model)
+    {
+        <li>@Html.ActionLink(giyim.Name, "Details", new { id = giyim.GiyimId })</li>
+    }
+</ul>

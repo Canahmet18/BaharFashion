@@ -1,0 +1,12 @@
+﻿@model IEnumerable<BaharFashion.Models.Kategori>
+@{
+    ViewBag.Title = "Store";
+}
+<h3>Giyim</h3>
+<p>Select from @Model.Count() turs:</p>
+<ul>
+    @foreach (var kategori in Model)
+    {
+        <li>@Html.ActionLink(kategori.Name, "Browse", new { kategoriId = kategori.KategoriId.ToString() })</li>
+    }
+</ul>
